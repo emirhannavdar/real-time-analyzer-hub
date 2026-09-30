@@ -52,9 +52,42 @@ function SettingsPage() {
             className="font-mono"
           />
           <p className="text-xs text-muted-foreground">
-            REST API'nin kök adresi. Örn. http://192.168.1.34:8000/api/v1
+            REST API'nin kök adresi. Örn. http://127.0.0.1:8000/api/v1
           </p>
         </div>
+
+        <div className="grid gap-4 sm:grid-cols-[1fr_140px]">
+          <div className="space-y-2">
+            <Label htmlFor="simHost" className="font-mono text-xs tracking-widest uppercase">
+              Simülatör IP adresi
+            </Label>
+            <Input
+              id="simHost"
+              value={form.simHost}
+              onChange={(e) => setForm({ ...form, simHost: e.target.value })}
+              placeholder="127.0.0.1"
+              className="font-mono"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="simPort" className="font-mono text-xs tracking-widest uppercase">
+              Port
+            </Label>
+            <Input
+              id="simPort"
+              type="number"
+              min={1}
+              max={65535}
+              value={form.simPort}
+              onChange={(e) => setForm({ ...form, simPort: Number(e.target.value) || 5020 })}
+              className="font-mono"
+            />
+          </div>
+        </div>
+        <p className="-mt-3 text-xs text-muted-foreground">
+          enerji_analizoru_sim.py'nin Modbus TCP adresi. Arayüzdeki değerler öncelikle buradan
+          okunur (register 30000, 44 adet).
+        </p>
 
         <div className="space-y-2">
           <Label htmlFor="interval" className="font-mono text-xs tracking-widest uppercase">

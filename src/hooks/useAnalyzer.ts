@@ -12,8 +12,9 @@ import {
   setResetMode,
   type ApiSettings,
 } from "@/lib/api";
+import { readSimulator } from "@/lib/simTcp.functions";
 
-export type Source = "live" | "demo";
+export type Source = "sim" | "live" | "demo";
 
 export interface AnalyzerState {
   measurements: Measurements;
@@ -87,6 +88,18 @@ export function useAnalyzer(): AnalyzerState {
         tickDemo(null);
         return;
       }
+      // 1) Simülatör (Modbus TCP) — arayüzdeki değerlerin birincil kaynağı
+      try {
+        const res = await readSimulator({ data: { host: settings.simHost, port: settings.simPort } });
+        if (cancelled) return;
+        setSource("sim");
+        setError(null);
+        push(res.measurements, res.timestamp);
+        return;
+      } catch {
+        if (cancelled) return;
+      }
+      // 2) REST API (veritabanındaki son ölçümler)
       try {
         const rows = await fetchReadings(settings.baseUrl);
         if (cancelled) return;
@@ -103,7 +116,7 @@ export function useAnalyzer(): AnalyzerState {
       } catch (e) {
         if (cancelled) return;
         void e;
-        tickDemo("API'ye ulaşılamadı — yerleşik simülasyon verisi gösteriliyor.");
+        tickDemo("Simülatöre ve API'ye ulaşılamadı — yerleşik simülasyon verisi gösteriliyor.");
       }
     };
 
@@ -115,7 +128,7 @@ export function useAnalyzer(): AnalyzerState {
       cancelled = true;
       clearInterval(id);
     };
-  }, [settings.baseUrl, settings.intervalMs, settings.forceDemo, push]);
+  }, [settings.baseUrl, settings.simHost, settings.simPort, settings.intervalMs, settings.forceDemo, push]);
 
   const toggleBreaker = useCallback(() => {
     const next = !breakerRef.current;
@@ -134,7 +147,7 @@ export function useAnalyzer(): AnalyzerState {
     measurements,
     history,
     source,
-    connected: source === "live",
+    connected: source === "sim" || source === "live",
     error,
     lastUpdate,
     breakerOn,
