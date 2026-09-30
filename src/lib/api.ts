@@ -7,7 +7,7 @@ export interface ApiSettings {
 }
 
 export const DEFAULT_SETTINGS: ApiSettings = {
-  baseUrl: "http://192.168.1.34:8000/api/v1",
+  baseUrl: "http://127.0.0.1:8000/api/v1",
   intervalMs: 1000,
   forceDemo: false,
 };
