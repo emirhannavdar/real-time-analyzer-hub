@@ -10,8 +10,8 @@ export interface ApiSettings {
 
 export const DEFAULT_SETTINGS: ApiSettings = {
   baseUrl: "http://127.0.0.1:8000/api/v1",
-  simHost: "127.0.0.1",
-  simPort: 5020,
+  simHost: "192.168.1.34",
+  simPort: 503,
   intervalMs: 1000,
   forceDemo: false,
 };
