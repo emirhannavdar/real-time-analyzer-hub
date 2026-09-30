@@ -102,8 +102,8 @@ export function useAnalyzer(): AnalyzerState {
         setHistory(rows.slice(-HISTORY_LIMIT));
       } catch (e) {
         if (cancelled) return;
-        const msg = e instanceof Error ? e.message : "bilinmeyen hata";
-        tickDemo(`API'ye ulaşılamadı (${msg}) — demo veri gösteriliyor.`);
+        void e;
+        tickDemo("API'ye ulaşılamadı — yerleşik simülasyon verisi gösteriliyor.");
       }
     };
 
