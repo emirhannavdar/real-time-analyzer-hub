@@ -1,24 +1,59 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { AnalyzerDevice } from "@/components/scada/AnalyzerDevice";
+import { BreakerSwitch } from "@/components/scada/BreakerSwitch";
+import { PhaseCard } from "@/components/scada/PhaseCard";
+import { StatusBar } from "@/components/scada/StatusBar";
+import { TrendChart } from "@/components/scada/TrendChart";
+import { useAnalyzer } from "@/hooks/useAnalyzer";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
-  component: Index,
+  head: () => ({
+    meta: [
+      { title: "Canlı Panel · Modbus Enerji Analizörü" },
+      {
+        name: "description",
+        content:
+          "3 fazlı enerji analizörünün canlı gerilim, akım, güç ve enerji değerleri; şalter ile reset modu kontrolü.",
+      },
+      { property: "og:title", content: "Canlı Panel · Modbus Enerji Analizörü" },
+      {
+        property: "og:description",
+        content: "Modbus TCP enerji analizörü için endüstriyel canlı izleme paneli.",
+      },
+    ],
+  }),
+  component: Dashboard,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
+function Dashboard() {
+  const a = useAnalyzer();
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
+    <div className="mx-auto max-w-7xl space-y-5 px-4 py-6">
+      <StatusBar
+        live={a.connected}
+        error={a.error}
+        lastUpdate={a.lastUpdate}
+        intervalMs={a.settings.intervalMs}
+        baseUrl={a.settings.baseUrl}
       />
+
+      <div className="grid gap-5 lg:grid-cols-[1fr_260px]">
+        <AnalyzerDevice m={a.measurements} energized={a.breakerOn} live={a.connected} />
+        <BreakerSwitch on={a.breakerOn} busy={a.toggling} onToggle={a.toggleBreaker} />
+      </div>
+
+      <div className="grid gap-5 md:grid-cols-3">
+        <PhaseCard phase={1} m={a.measurements} energized={a.breakerOn} />
+        <PhaseCard phase={2} m={a.measurements} energized={a.breakerOn} />
+        <PhaseCard phase={3} m={a.measurements} energized={a.breakerOn} />
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-3">
+        <TrendChart history={a.history} metric="voltage" />
+        <TrendChart history={a.history} metric="current" />
+        <TrendChart history={a.history} metric="power" />
+      </div>
     </div>
   );
 }
