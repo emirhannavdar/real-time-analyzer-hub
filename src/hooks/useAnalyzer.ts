@@ -12,8 +12,9 @@ import {
   setResetMode,
   type ApiSettings,
 } from "@/lib/api";
+import { readSimulator } from "@/lib/simTcp.functions";
 
-export type Source = "live" | "demo";
+export type Source = "sim" | "live" | "demo";
 
 export interface AnalyzerState {
   measurements: Measurements;

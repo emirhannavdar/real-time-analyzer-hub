@@ -2,12 +2,16 @@ import { ZERO_MEASUREMENTS, type Measurements, type Reading } from "./analyzer";
 
 export interface ApiSettings {
   baseUrl: string;
+  simHost: string;
+  simPort: number;
   intervalMs: number;
   forceDemo: boolean;
 }
 
 export const DEFAULT_SETTINGS: ApiSettings = {
   baseUrl: "http://127.0.0.1:8000/api/v1",
+  simHost: "127.0.0.1",
+  simPort: 5020,
   intervalMs: 1000,
   forceDemo: false,
 };
