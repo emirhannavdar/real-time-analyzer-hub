@@ -37,7 +37,7 @@ function trimBase(baseUrl: string) {
 
 async function request(baseUrl: string, path: string, init?: RequestInit) {
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 4000);
+  const timer = setTimeout(() => controller.abort(), 2500);
   try {
     const res = await fetch(`${trimBase(baseUrl)}${path}`, { ...init, signal: controller.signal });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);

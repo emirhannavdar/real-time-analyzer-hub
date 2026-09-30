@@ -107,6 +107,8 @@ export function useAnalyzer(): AnalyzerState {
       }
     };
 
+    // API cevabı beklenirken ekran boş kalmasın: hemen bir demo örneği üret.
+    tickDemo(null);
     void tick();
     const id = setInterval(() => void tick(), Math.max(250, settings.intervalMs));
     return () => {
