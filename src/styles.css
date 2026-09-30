@@ -4,6 +4,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@source inline("text-phase-1 text-phase-2 text-phase-3 bg-phase-1 bg-phase-2 bg-phase-3");
+
 /*
  * Endüstriyel SCADA tasarım sistemi.
  * Tüm renkler oklch token olarak burada tanımlıdır.
