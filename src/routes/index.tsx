@@ -31,7 +31,7 @@ function Dashboard() {
   return (
     <div className="mx-auto max-w-7xl space-y-5 px-4 py-6">
       <StatusBar
-        live={a.connected}
+        source={a.source}
         error={a.error}
         lastUpdate={a.lastUpdate}
         intervalMs={a.settings.intervalMs}
