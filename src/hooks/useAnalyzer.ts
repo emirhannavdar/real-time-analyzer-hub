@@ -13,6 +13,8 @@ import {
   type ApiSettings,
 } from "@/lib/api";
 import { readSimulator } from "@/lib/simTcp.functions";
+import { setResetModeServer } from "@/lib/reset.functions";
+import { toast } from "sonner";
 
 export type Source = "sim" | "live" | "demo";
 
@@ -138,8 +140,19 @@ export function useAnalyzer(): AnalyzerState {
     if (settings.forceDemo) return;
     setToggling(true);
     // şalter kapalı => reset_mode true => simülatör 0 döner
-    void setResetMode(settings.baseUrl, !next)
-      .catch(() => setError("Şalter komutu API'ye iletilemedi (yerel olarak uygulandı)."))
+    void setResetModeServer({ data: { baseUrl: settings.baseUrl, value: !next } })
+      .then(() => toast.success(next ? "Şalter açıldı (reset_mode = false)" : "Şalter kapatıldı (reset_mode = true)"))
+      .catch(async (err) => {
+        // sunucu yolu başarısızsa tarayıcıdan doğrudan dene
+        try {
+          await setResetMode(settings.baseUrl, !next);
+          toast.success("reset_mode güncellendi");
+        } catch {
+          toast.error("Şalter komutu API'ye iletilemedi", {
+            description: err instanceof Error ? err.message : String(err),
+          });
+        }
+      })
       .finally(() => setToggling(false));
   }, [settings.baseUrl, settings.forceDemo]);
 
